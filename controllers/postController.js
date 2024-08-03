@@ -4,12 +4,12 @@ const { PrismaClient } = require("@prisma/client");
 
 // get all posts
 exports.getAllPosts = asyncHandler(async (req, res) => {
-  res.send("GET ALL POSTS NOT IMPLEMENTED");
+  res.json({ message: "GET ALL POSTS NOT IMPLEMENTED" });
 });
 
 // create new post form
 exports.getNewPost = asyncHandler(async (req, res) => {
-  res.send("GET NEW POST FORM");
+  res.json({ message: "GET NEW POST FORM" });
 });
 
 // submit a new post
