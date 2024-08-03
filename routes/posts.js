@@ -1,34 +1,23 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const postController = require("../controllers/postController");
 
 // get posts
-router.get("/", (req, res) => {
-  res.send("LOAD POSTS");
-});
+router.get("/", postController.getAllPosts);
 
 // create new post page
-router.get("/new", (req, res) => {
-  res.send("CREATE A NEW POST");
-});
+router.get("/new", postController.getNewPost);
 
 // submit a new post
-router.post("/new", (req, res) => {
-  res.send("SUBMIT A NEW POST");
-});
+router.post("/new", postController.postNewPost);
 
 // get a specific post
-router.get("/:id", (req, res) => {
-  res.send(`pull up post of ID ${req.params.id}`);
-});
+router.get("/:id", postController.getPostById);
 
 // update specific post
-router.put("/:id", (req, res) => {
-  res.send("update specific id");
-});
+router.put("/:id", postController.updatePostById);
 
 // delete specific post
-router.delete("/:id", (req, res) => {
-  res.json({ message: "delete this specifc ID" });
-});
+router.delete("/:id", postController.deletePostById);
 
 module.exports = router;
