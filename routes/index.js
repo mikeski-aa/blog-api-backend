@@ -7,7 +7,11 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/register", function (req, res, next) {
-  res.send("load register form");
+  const user = {
+    id: 1,
+    name: "mike",
+  };
+  res.json(req.body);
 });
 
 router.post("/new", function (req, res, next) {
