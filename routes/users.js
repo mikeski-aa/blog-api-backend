@@ -4,6 +4,7 @@ const userController = require("../controllers/userController");
 const passport = require("passport");
 require("../config/passport");
 const { PrismaClient, Prisma } = require("@prisma/client");
+const jwt = require("jsonwebtoken");
 
 // get register from for a new user
 router.get("/register", userController.getRegisterUser);
@@ -15,7 +16,25 @@ router.post("/register", userController.postRegisterUser);
 router.get("/login", userController.getLoginUser);
 
 // login POST form
-router.post("/login", userController.postLoginUser);
+// router.post("/login", userController.postLoginUser);
+
+// try out another thing
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    session: false,
+  }),
+  (req, res) => {
+    // Token
+    console.log("test");
+    console.log(req.body.username);
+    const token = jwt.sign({ username: req.body.username }, "secret", {
+      expiresIn: "1d",
+    });
+
+    return res.json({ token: token });
+  }
+);
 
 // // testing
 // router.get("/profile/", verifyToken, async (req, res, next) => {

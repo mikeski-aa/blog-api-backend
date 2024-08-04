@@ -3,16 +3,20 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
 const { PrismaClient, Prisma } = require("@prisma/client");
+const validatePassword = require("../lib/passportUtils").validatePassword;
 
 const verifyCallback = (username, password, done) => {
+  console.log("verifycallback test");
+  console.log(username, password);
   const prisma = new PrismaClient();
 
-  prisma.User.findUnique({
+  prisma.User.findFirst({
     where: {
       username: username,
     },
   })
     .then((user) => {
+      console.log(user);
       if (!user) {
         console.log("USER NOT FOUND");
         // user not present in DB
@@ -22,7 +26,7 @@ const verifyCallback = (username, password, done) => {
       // function checking validity from utils -> compares password hash v.s stored hash
       // true or false
       const isValid = validatePassword(password, user.hash);
-
+      console.log(isValid);
       if (isValid) {
         // validation passed
         return done(null, user);
@@ -36,6 +40,11 @@ const verifyCallback = (username, password, done) => {
     });
 };
 
+// new strategy requires verify callback
+// localstrategy is the name of strategy found on passport's strategy list
+const strategy = new LocalStrategy(verifyCallback);
+passport.use(strategy);
+
 // JWT strategy
 passport.use(
   new JwtStrategy(
@@ -44,10 +53,12 @@ passport.use(
       secretOrKey: "secret",
     },
     (jwt_payload, done) => {
+      console.log("bla bla");
+      console.log(jwt_payload.username);
       const prisma = new PrismaClient();
-      prisma.User.findUnique({
+      prisma.User.findFirst({
         where: {
-          id: jwt_payload.id,
+          username: jwt_payload.username,
         },
       })
         .then((user) => {
@@ -59,8 +70,3 @@ passport.use(
     }
   )
 );
-
-// new strategy requires verify callback
-// localstrategy is the name of strategy found on passport's strategy list
-const strategy = new LocalStrategy(verifyCallback);
-passport.use(strategy);

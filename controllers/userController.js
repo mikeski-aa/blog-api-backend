@@ -96,16 +96,10 @@ exports.postLoginUser = [
         return res.json({ message: "Incorrect password" });
       }
 
-      jwt.sign(
-        { user: user.username },
-        "secret",
-        { expiresIn: "1d" },
-        (err, token) => {
-          res.json({
-            token: token,
-          });
-        }
-      );
+      const token = jwt.sign({ id: user.username }, "secret");
+      res.json({
+        token: token,
+      });
     } catch (error) {
       next(error);
     }
