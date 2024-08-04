@@ -1,36 +1,33 @@
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
-const { PrismaClient, Prisma } = require("@prisma/client");
-const validatePassword = require("../lib/passportUtils").validatePassword;
+const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
+const { PrismaClient, Prisma } = require("@prisma/client");
 
-const opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = "secret";
-
-const verifyCallback = (password, done) => {
+const verifyCallback = (username, password, done) => {
   const prisma = new PrismaClient();
-  console.log(password);
 
-  // I'm pretty sure this isn't correct
-  prisma.user
-    .findUnique({
-      where: {
-        id: payload.id,
-      },
-    })
+  prisma.User.findUnique({
+    where: {
+      username: username,
+    },
+  })
     .then((user) => {
       if (!user) {
-        // user not found
+        console.log("USER NOT FOUND");
+        // user not present in DB
+        // pass done callback to passport stating user was not found
         return done(null, false);
       }
-      const isValid = validatePassword(payload.password, user.hash);
+      // function checking validity from utils -> compares password hash v.s stored hash
+      // true or false
+      const isValid = validatePassword(password, user.hash);
 
       if (isValid) {
-        // validation OK
+        // validation passed
         return done(null, user);
       } else {
-        // vaidation failed
+        console.log("invalid pass");
         return done(null, false);
       }
     })
@@ -39,5 +36,31 @@ const verifyCallback = (password, done) => {
     });
 };
 
-const strategy = new JwtStrategy(opts, verifyCallback);
+// JWT strategy
+passport.use(
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: "secret",
+    },
+    (jwt_payload, done) => {
+      const prisma = new PrismaClient();
+      prisma.User.findUnique({
+        where: {
+          id: jwt_payload.id,
+        },
+      })
+        .then((user) => {
+          return done(null, user);
+        })
+        .catch((err) => {
+          return done(err, false, { message: "Token mismatch" });
+        });
+    }
+  )
+);
+
+// new strategy requires verify callback
+// localstrategy is the name of strategy found on passport's strategy list
+const strategy = new LocalStrategy(verifyCallback);
 passport.use(strategy);

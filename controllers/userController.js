@@ -86,6 +86,7 @@ exports.postLoginUser = [
       if (!user) {
         return res.json({ message: "400, user dose not exist" });
       }
+
       // check password match
       const hashVerify = validatePassword(req.body.password, user.hash);
       console.log(hashVerify);
@@ -95,17 +96,16 @@ exports.postLoginUser = [
         return res.json({ message: "Incorrect password" });
       }
 
-      const accessToken = jwt.sign(
-        {
-          id: user.id,
-        },
+      jwt.sign(
+        { user: user.username },
         "secret",
-        { expiresIn: "1d" }
+        { expiresIn: "1d" },
+        (err, token) => {
+          res.json({
+            token: token,
+          });
+        }
       );
-
-      return res
-        .status(200)
-        .json({ message: "user logged in", accessToken: accessToken });
     } catch (error) {
       next(error);
     }
