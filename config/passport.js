@@ -1,6 +1,7 @@
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const { PrismaClient, Prisma } = require("@prisma/client");
+const validatePassword = require("../lib/passportUtils").validatePassword;
 
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
