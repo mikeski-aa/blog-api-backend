@@ -2,6 +2,9 @@ const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
 const genPassword = require("../lib/passportUtils").genPassword;
+const validatePassword = require("../lib/passportUtils").validatePassword;
+const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 // get new user register
 exports.getRegisterUser = asyncHandler(async (req, res) => {
@@ -25,7 +28,7 @@ exports.postRegisterUser = [
 
     if (!errors.isEmpty) {
       console.log(errors);
-      res.json(errors);
+      return res.json(errors);
     }
 
     try {
@@ -50,8 +53,8 @@ exports.postRegisterUser = [
         return res.json({ message: "User created successfully" });
       } else {
         // user exists, we cannot create a new user
-        return res.json(user, {
-          message: "User already exists we cannot create it again!",
+        return res.json({
+          error: "User already exists we cannot create it again!",
         });
       }
     } catch (error) {
@@ -61,16 +64,53 @@ exports.postRegisterUser = [
 ];
 
 // get new user login
-exports.getLoginUser = asyncHandler(async (req, res) => {
-  res.json({ message: "GET LOGIN NOT IMPLEMENTED" });
+exports.getLoginUser = asyncHandler(async (req, res, next) => {
+  res.json({ message: "GET NOT IMPLEMENTED YET" });
 });
 
 // post NEW USER LOGIN
-exports.postLoginUser = asyncHandler(async (req, res) => {
-  console.log("Req body: ");
-  console.log(req.body);
-  res.json({ message: "POST LOGIN NOT IMPLEMENTED" });
-});
+exports.postLoginUser = [
+  body("username").trim().escape(),
+  body("password").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const prisma = new PrismaClient();
+
+    try {
+      const user = await prisma.User.findFirst({
+        where: {
+          username: req.body.username,
+        },
+      });
+
+      if (!user) {
+        return res.json({ message: "400, user dose not exist" });
+      }
+      // check password match
+      const hashVerify = validatePassword(req.body.password, user.hash);
+      console.log(hashVerify);
+      console.log(user.id);
+
+      if (!hashVerify) {
+        return res.json({ message: "Incorrect password" });
+      }
+
+      const accessToken = jwt.sign(
+        {
+          id: user.id,
+        },
+        "secret",
+        { expiresIn: "1d" }
+      );
+
+      return res
+        .status(200)
+        .json({ message: "user logged in", accessToken: accessToken });
+    } catch (error) {
+      next(error);
+    }
+  }),
+];
 
 // get user profile
 exports.getUserProfile = asyncHandler(async (req, res) => {

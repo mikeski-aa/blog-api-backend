@@ -2,19 +2,21 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const { PrismaClient, Prisma } = require("@prisma/client");
 const validatePassword = require("../lib/passportUtils").validatePassword;
+const passport = require("passport");
 
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = "secret";
 
-const verifyCallback = (username, password, done) => {
+const verifyCallback = (password, done) => {
   const prisma = new PrismaClient();
+  console.log(password);
 
   // I'm pretty sure this isn't correct
   prisma.user
     .findUnique({
       where: {
-        username: username,
+        id: payload.id,
       },
     })
     .then((user) => {
@@ -22,7 +24,7 @@ const verifyCallback = (username, password, done) => {
         // user not found
         return done(null, false);
       }
-      const isValid = validatePassword(password, user.hash);
+      const isValid = validatePassword(payload.password, user.hash);
 
       if (isValid) {
         // validation OK
