@@ -3,13 +3,19 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const cors = require("cors");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const postsRouter = require("./routes/posts");
 
-const app = express();
+// cors package requierd to allow cross-origins requests to the APIs
+const corsOptions = {
+  origin: "*",
+};
 
+const app = express();
+app.use(cors(corsOptions));
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");

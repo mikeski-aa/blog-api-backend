@@ -4,7 +4,14 @@ const { PrismaClient } = require("@prisma/client");
 
 // get user profile
 exports.getUserProfile = asyncHandler(async (req, res) => {
-  res.json({ message: `GET USER PROFILE ${req.params.id}` });
+  const prisma = new PrismaClient();
+  const user = await prisma.user.findFirst({
+    where: {
+      username: "Mike",
+    },
+  });
+  res.json(user);
+  // res.json({ message: `GET USER PROFILE ${req.params.id}` });
 });
 
 // get new user register
