@@ -24,18 +24,36 @@ exports.postRegisterUser = [
     const prisma = new PrismaClient();
 
     if (!errors.isEmpty) {
-      next(errors.array());
+      console.log(errors);
+      res.json(errors);
     }
 
     try {
       // check whether user exists
-      const user = await prisma.findFirst({
+      const user = await prisma.User.findFirst({
         where: {
           username: req.body.username,
         },
       });
 
-      console.log(user);
+      if (user == null) {
+        // user does not exist, we can create a new user!
+        console.log("User does not exist");
+        const hash = await genPassword(req.body.password);
+
+        await prisma.User.create({
+          data: {
+            username: req.body.username,
+            hash: hash,
+          },
+        });
+        return res.json({ message: "User created successfully" });
+      } else {
+        // user exists, we cannot create a new user
+        return res.json(user, {
+          message: "User already exists we cannot create it again!",
+        });
+      }
     } catch (error) {
       next(error);
     }
