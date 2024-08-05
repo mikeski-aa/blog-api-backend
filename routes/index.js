@@ -9,7 +9,7 @@ router.get("/", function (req, res, next) {
 
 // test if authenticate works
 router.get(
-  "/test",
+  "/logincheck",
   passport.authenticate("jwt", {
     session: false,
   }),
