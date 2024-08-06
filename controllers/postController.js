@@ -3,9 +3,15 @@ const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
 
 // get all posts
+// this function gets all of the posts for now, however,
+// in reality I will need one for published and unpublished posts
 exports.getAllPosts = asyncHandler(async (req, res) => {
   const prisma = new PrismaClient();
-  const posts = await prisma.Post.findMany();
+  const posts = await prisma.Post.findMany({
+    include: {
+      user: true,
+    },
+  });
   console.log(posts);
   res.json({ posts });
 });
