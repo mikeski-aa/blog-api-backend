@@ -35,5 +35,28 @@ async function newPost() {
   });
 }
 
+async function newComment() {
+  const prisma = new PrismaClient();
+
+  // await prisma.Comment.create({
+  //   data: {
+  //     text: "Nice post!",
+  //     date: new Date(),
+  //     postId: 1,
+  //     userId: 5,
+  //   },
+  // });
+
+  await prisma.Comment.create({
+    data: {
+      text: "I like your post here!",
+      date: new Date(),
+      postId: 1,
+      userId: 5,
+    },
+  });
+}
+
+newComment();
 // NewUser();
-newPost();
+// newPost();
