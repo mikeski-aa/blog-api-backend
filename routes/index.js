@@ -16,7 +16,7 @@ router.get(
   (req, res) => {
     if (!req.user) {
       res.json({
-        username: "nobody",
+        username: "#FAILED#",
       });
     }
 

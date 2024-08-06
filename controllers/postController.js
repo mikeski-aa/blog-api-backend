@@ -4,7 +4,10 @@ const { PrismaClient } = require("@prisma/client");
 
 // get all posts
 exports.getAllPosts = asyncHandler(async (req, res) => {
-  res.json({ message: "GET ALL POSTS NOT IMPLEMENTED" });
+  const prisma = new PrismaClient();
+  const posts = await prisma.Post.findMany();
+  console.log(posts);
+  res.json({ posts });
 });
 
 // create new post form
