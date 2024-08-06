@@ -22,6 +22,9 @@ exports.getCommentsForPost = asyncHandler(async (req, res, next) => {
       where: {
         postId: +req.params.id,
       },
+      include: {
+        user: true,
+      },
     });
 
     res.json(comments);
