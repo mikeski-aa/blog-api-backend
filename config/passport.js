@@ -53,8 +53,6 @@ passport.use(
       secretOrKey: "secret",
     },
     (jwt_payload, done) => {
-      console.log("bla bla");
-      console.log(jwt_payload.username);
       const prisma = new PrismaClient();
       prisma.User.findFirst({
         where: {

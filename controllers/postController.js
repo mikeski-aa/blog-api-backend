@@ -12,7 +12,6 @@ exports.getAllPosts = asyncHandler(async (req, res) => {
       user: true,
     },
   });
-  console.log(posts);
   res.json({ posts });
 });
 

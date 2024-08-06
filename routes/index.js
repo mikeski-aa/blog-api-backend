@@ -22,6 +22,7 @@ router.get(
 
     res.json({
       username: req.user.username,
+      id: req.user.id,
     });
   }
 );
