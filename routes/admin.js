@@ -37,4 +37,14 @@ router.delete(
   adminController.adminDeletePost
 );
 
+// update post publish
+router.put(
+  "/publish",
+  passport.authenticate("jwt", {
+    session: false,
+  }),
+  isAdmin,
+  adminController.adminPutPublish
+);
+
 module.exports = router;

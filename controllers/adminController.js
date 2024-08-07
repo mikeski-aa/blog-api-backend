@@ -51,3 +51,12 @@ exports.adminDeletePost = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+// update
+exports.adminPutPublish = asyncHandler(async (req, res, next) => {
+  console.log("test");
+  const prisma = new PrismaClient();
+  console.log(req.query.id);
+  console.log(req.query.state);
+  res.json({ message: "working" });
+});
