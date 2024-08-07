@@ -25,7 +25,7 @@ exports.postComment = [
 
     console.log("Checking if everything is being passed correctly");
     console.log(req.body.comment);
-    console.log(req.body.id);
+    console.log(req.user.id);
     console.log(req.body.postId);
 
     if (!errors.isEmpty) {
@@ -47,7 +47,7 @@ exports.postComment = [
     try {
       await prisma.comment.create({
         data: {
-          userId: req.body.userId,
+          userId: req.user.id,
           postId: req.body.postId,
           text: req.body.comment,
           date: new Date(),

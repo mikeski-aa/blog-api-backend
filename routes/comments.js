@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const commentController = require("../controllers/commentController");
+const isAuth = require("./Authmiddleware").isAuth;
+const passport = require("passport");
 
 // get all comments route
 router.get("/", commentController.getAllComments);
@@ -9,6 +11,13 @@ router.get("/", commentController.getAllComments);
 router.get("/:id", commentController.getCommentsForPost);
 
 // post new comment
-router.post("/new", commentController.postComment);
+// protected route with JWT
+router.post(
+  "/new",
+  passport.authenticate("jwt", {
+    session: false,
+  }),
+  commentController.postComment
+);
 
 module.exports = router;

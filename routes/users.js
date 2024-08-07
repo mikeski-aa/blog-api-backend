@@ -5,15 +5,16 @@ const passport = require("passport");
 require("../config/passport");
 const { PrismaClient, Prisma } = require("@prisma/client");
 const jwt = require("jsonwebtoken");
+const isAuth = require("./Authmiddleware").isAuth;
 
 // get register from for a new user
-router.get("/register", userController.getRegisterUser);
+router.get("/register", isAuth, userController.getRegisterUser);
 
 // post a register form for a new user
 router.post("/register", userController.postRegisterUser);
 
 // login get form
-router.get("/login", userController.getLoginUser);
+router.get("/login", isAuth, userController.getLoginUser);
 
 // login POST form
 // router.post("/login", userController.postLoginUser);
