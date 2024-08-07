@@ -27,4 +27,14 @@ router.get(
   adminController.getAdminPosts
 );
 
+// delete post and
+router.delete(
+  "/delete/:id",
+  passport.authenticate("jwt", {
+    session: false,
+  }),
+  isAdmin,
+  adminController.adminDeletePost
+);
+
 module.exports = router;

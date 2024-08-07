@@ -42,7 +42,7 @@ async function newComment() {
     data: {
       text: "Nice post!",
       date: new Date(),
-      postId: 1,
+      postId: 3,
       userId: 5,
     },
   });
@@ -51,12 +51,12 @@ async function newComment() {
     data: {
       text: "I like your post here!",
       date: new Date(),
-      postId: 1,
+      postId: 3,
       userId: 5,
     },
   });
 }
 
-// newComment();
 // NewUser();
 // newPost();
+// newComment();
