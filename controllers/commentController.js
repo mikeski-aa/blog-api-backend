@@ -1,7 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const { PrismaClient } = require("@prisma/client");
-const expressAsyncHandler = require("express-async-handler");
 
 // get all comments
 exports.getAllComments = asyncHandler(async (req, res, next) => {

@@ -6,8 +6,6 @@ const { PrismaClient, Prisma } = require("@prisma/client");
 const validatePassword = require("../lib/passportUtils").validatePassword;
 
 const verifyCallback = (username, password, done) => {
-  console.log("verifycallback test");
-  console.log(username, password);
   const prisma = new PrismaClient();
 
   prisma.User.findFirst({
@@ -26,6 +24,7 @@ const verifyCallback = (username, password, done) => {
       // function checking validity from utils -> compares password hash v.s stored hash
       // true or false
       const isValid = validatePassword(password, user.hash);
+      console.log("user validation: ");
       console.log(isValid);
       if (isValid) {
         // validation passed

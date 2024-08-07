@@ -11,6 +11,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const postsRouter = require("./routes/posts");
 const commentsRouter = require("./routes/comments");
+const adminRouter = require("./routes/admin");
 
 // cors package requierd to allow cross-origins requests to the APIs
 const corsOptions = {
@@ -33,6 +34,7 @@ app.use("/", indexRouter);
 app.use("/user", usersRouter);
 app.use("/posts", postsRouter);
 app.use("/comments", commentsRouter);
+app.use("/admin", adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
