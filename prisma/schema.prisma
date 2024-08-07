@@ -19,6 +19,7 @@ model User {
   hash  String 
   posts  Post[]
   comments  Comment[]
+  isadmin Boolean @default(false)
 }
 
 model Post {

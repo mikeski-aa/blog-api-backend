@@ -8,18 +8,19 @@ const jwt = require("jsonwebtoken");
 const isAuth = require("./Authmiddleware").isAuth;
 
 // get register from for a new user
-router.get("/register", isAuth, userController.getRegisterUser);
+router.get("/register", userController.getRegisterUser);
 
 // post a register form for a new user
 router.post("/register", userController.postRegisterUser);
 
 // login get form
-router.get("/login", isAuth, userController.getLoginUser);
+router.get("/login", userController.getLoginUser);
 
 // login POST form
 // router.post("/login", userController.postLoginUser);
 
 // try out another thing
+// this is for regular sign in and for issuing TOKEN -> this is NOT FOR AUTHORIZATION
 router.post(
   "/login",
   passport.authenticate("local", {
@@ -28,12 +29,31 @@ router.post(
   (req, res) => {
     // Token
     console.log("test");
-    console.log(req.body.username);
+    console.log(req.body);
     const token = jwt.sign({ username: req.body.username }, "secret", {
       expiresIn: "1d",
     });
 
     return res.json({ token: token });
+  }
+);
+
+// admin login
+router.post(
+  "/adminlogin",
+  passport.authenticate("local", { session: false }),
+  (req, res) => {
+    console.log(req.user);
+    // user was authenticated by passport, before we issue a tokenhowever, we need to check that the user is an admin!
+    if (req.user.isadmin != true) {
+      return res.json({ message: "You are not authorized to view this page" });
+    }
+
+    const token = jwt.sign({ username: req.body.username }, "secret", {
+      expiresIn: "12h",
+    });
+
+    return res.json({ token: token, isadmin: req.user.isadmin });
   }
 );
 

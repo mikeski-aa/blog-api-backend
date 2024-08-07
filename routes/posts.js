@@ -1,9 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const postController = require("../controllers/postController");
+const isAdmin = require("./Authmiddleware").isAdmin;
+const passport = require("passport");
 
 // get posts
 router.get("/", postController.getAllPosts);
+
+// get all posts for admin route
+router.get(
+  "/adminposts",
+  passport.authenticate("jwt", {
+    session: false,
+  }),
+  isAdmin,
+  postController.getAdminPosts
+);
 
 // create new post page
 router.get("/new", postController.getNewPost);
