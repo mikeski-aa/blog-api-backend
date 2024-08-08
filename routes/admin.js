@@ -56,7 +56,12 @@ router.put(
 );
 
 // get comments
-
+router.post(
+  "/addnew",
+  passport.authenticate("jwt", { session: false }),
+  isAdmin,
+  adminController.adminPostNew
+);
 // delete comment
 
 module.exports = router;

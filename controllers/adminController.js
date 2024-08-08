@@ -97,7 +97,7 @@ exports.adminUpdatePost = [
     const errors = validationResult(req);
     const prisma = new PrismaClient();
     if (!req.body.newtext || !req.body.newtitle || !req.body.id) {
-      return res.json({ message: "Title missing" });
+      return res.json({ message: "items missing" });
     }
 
     if (!errors.isEmpty()) {
@@ -119,5 +119,38 @@ exports.adminUpdatePost = [
     } catch (error) {
       next(error);
     }
+  }),
+];
+
+// post new post
+exports.adminPostNew = [
+  body("title").isLength({ min: 1 }).escape(),
+  body("text").isLength({ min: 1 }).escape(),
+
+  asyncHandler(async (req, res, next) => {
+    console.log("test");
+    const errors = validationResult(req);
+    const prisma = new PrismaClient();
+    console.log(req.user.id);
+    console.log(req.body);
+
+    if (!errors.isEmpty()) {
+      return res.json({ errors: errors.array() });
+    }
+    if (!req.body.title || !req.body.text) {
+      return res.json({ message: "items missing" });
+    }
+    console.log("dddddd");
+    await prisma.post.create({
+      data: {
+        userId: +req.user.id,
+        title: req.body.title,
+        text: req.body.text,
+        date: new Date(),
+        published: false,
+      },
+    });
+
+    res.json({ message: "New post created" });
   }),
 ];
