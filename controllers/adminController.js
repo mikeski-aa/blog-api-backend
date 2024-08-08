@@ -12,6 +12,11 @@ exports.getAdminPosts = asyncHandler(async (req, res) => {
       user: true,
       comments: true,
     },
+    orderBy: [
+      {
+        id: "asc",
+      },
+    ],
   });
   res.json({ posts });
 });
@@ -52,7 +57,7 @@ exports.adminDeletePost = asyncHandler(async (req, res, next) => {
   }
 });
 
-// update
+// update publish state
 exports.adminPutPublish = asyncHandler(async (req, res, next) => {
   const prisma = new PrismaClient();
   let published;
@@ -80,3 +85,39 @@ exports.adminPutPublish = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+// update post content
+exports.adminUpdatePost = [
+  body("newtext").isLength({ min: 1 }).escape(),
+  body("newtitle").isLength({ min: 1 }).escape(),
+  body("id").trim().escape(),
+
+  asyncHandler(async (req, res, next) => {
+    console.log(req.body);
+    const errors = validationResult(req);
+    const prisma = new PrismaClient();
+    if (!req.body.newtext || !req.body.newtitle || !req.body.id) {
+      return res.json({ message: "Title missing" });
+    }
+
+    if (!errors.isEmpty()) {
+      return res.json({ errors: errors.array() });
+    }
+
+    try {
+      await prisma.post.update({
+        where: {
+          id: +req.body.id,
+        },
+        data: {
+          title: req.body.newtitle,
+          text: req.body.newtext,
+        },
+      });
+
+      return res.json({ message: "Post updated" });
+    } catch (error) {
+      next(error);
+    }
+  }),
+];

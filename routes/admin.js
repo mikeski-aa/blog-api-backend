@@ -47,4 +47,16 @@ router.put(
   adminController.adminPutPublish
 );
 
+// update post text
+router.put(
+  "/editpost",
+  passport.authenticate("jwt", { session: false }),
+  isAdmin,
+  adminController.adminUpdatePost
+);
+
+// get comments
+
+// delete comment
+
 module.exports = router;
