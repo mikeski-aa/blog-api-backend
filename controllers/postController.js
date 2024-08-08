@@ -25,18 +25,7 @@ exports.postNewPost = asyncHandler(async (req, res) => {
   res.json({ message: "POST NEW POST NOT IMPLEMENTED" });
 });
 
-// get all posts for admin request
-exports.getAdminPosts = asyncHandler(async (req, res) => {
-  console.log(req.body);
-  const prisma = new PrismaClient();
-  const posts = await prisma.Post.findMany({
-    include: {
-      user: true,
-      comments: true,
-    },
-  });
-  res.json({ posts });
-});
+
 
 // GET A SPECIFIC POST BY ID
 exports.getPostById = asyncHandler(async (req, res) => {

@@ -38,24 +38,7 @@ router.post(
   }
 );
 
-// admin login
-router.post(
-  "/adminlogin",
-  passport.authenticate("local", { session: false }),
-  (req, res) => {
-    console.log(req.user);
-    // user was authenticated by passport, before we issue a tokenhowever, we need to check that the user is an admin!
-    if (req.user.isadmin != true) {
-      return res.json({ message: "You are not authorized to view this page" });
-    }
 
-    const token = jwt.sign({ username: req.body.username }, "secret", {
-      expiresIn: "12h",
-    });
-
-    return res.json({ token: token, isadmin: req.user.isadmin });
-  }
-);
 
 // // testing
 // router.get("/profile/", verifyToken, async (req, res, next) => {

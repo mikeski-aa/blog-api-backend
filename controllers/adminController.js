@@ -54,9 +54,29 @@ exports.adminDeletePost = asyncHandler(async (req, res, next) => {
 
 // update
 exports.adminPutPublish = asyncHandler(async (req, res, next) => {
-  console.log("test");
   const prisma = new PrismaClient();
+  let published;
+
+  // whatever is supplied by the query, do the reverse, as we are toggling the published status
+  if (req.query.state == "true") {
+    published = false;
+  } else {
+    published = true;
+  }
   console.log(req.query.id);
   console.log(req.query.state);
-  res.json({ message: "working" });
+  try {
+    await prisma.post.update({
+      where: {
+        id: +req.query.id,
+      },
+      data: {
+        published: published,
+      },
+    });
+
+    res.json({ message: "Published status updated successfully" });
+  } catch (error) {
+    next(error);
+  }
 });
